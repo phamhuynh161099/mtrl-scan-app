@@ -1,15 +1,21 @@
-import '~/global.css';
+import "~/global.css";
 
-import { DarkTheme, DefaultTheme, Theme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import * as React from 'react';
-import { Appearance, Platform, View } from 'react-native';
-import { NAV_THEME } from '~/lib/constants';
-import { useColorScheme } from '~/lib/useColorScheme';
-import { PortalHost } from '@rn-primitives/portal';
-import { ThemeToggle } from '~/components/ThemeToggle';
-import { setAndroidNavigationBar } from '~/lib/android-navigation-bar';
+import {
+  DarkTheme,
+  DefaultTheme,
+  Theme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { Slot, Stack, useRouter, useSegments } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import * as React from "react";
+import { ActivityIndicator, Appearance, Platform, View } from "react-native";
+import { NAV_THEME } from "~/lib/constants";
+import { useColorScheme } from "~/lib/useColorScheme";
+import { PortalHost } from "@rn-primitives/portal";
+import { ThemeToggle } from "~/components/ThemeToggle";
+import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { useAuthStore } from "~/store/authStore";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -23,7 +29,7 @@ const DARK_THEME: Theme = {
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
-} from 'expo-router';
+} from "expo-router";
 
 const usePlatformSpecificSetup = Platform.select({
   web: useSetWebBackgroundClassName,
@@ -31,40 +37,83 @@ const usePlatformSpecificSetup = Platform.select({
   default: noop,
 });
 
+const Guard = () => {
+  // Lấy state và actions từ store của Zustand
+  const { user, isLoading, checkAuthStatus } = useAuthStore();
+  const segments = useSegments();
+  const router = useRouter();
+
+  // 1. Chạy kiểm tra trạng thái đăng nhập một lần khi app mở
+  React.useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  // 2. Chạy logic điều hướng mỗi khi user hoặc trạng thái loading thay đổi
+  React.useEffect(() => {
+    if (isLoading) return; // Nếu đang kiểm tra thì không làm gì cả
+
+    const inPrivateGroup = segments[0] === "(private)";
+
+    if (!user && inPrivateGroup) {
+      // Chưa đăng nhập, cố vào trang private -> về login
+      router.replace("/(public)/login");
+      console.info("Không có quyền truy cập");
+    } else if (user && !inPrivateGroup) {
+      // Đảm bảo rằng route này tồn tại và đúng
+      router.replace("/(private)/(drawer)/(tabs)");
+    }
+
+    // router.replace('/(private)/(drawer)/(tabs)');
+  }, [user, isLoading, segments]);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
+  }
+
+  return <Slot />;
+};
+
 export default function RootLayout() {
   usePlatformSpecificSetup();
   const { isDarkColorScheme } = useColorScheme();
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
-      <Stack>
-        <Stack.Screen
-          name='index'
-          options={{
-            title: 'Starter Base',
-            headerRight: () => <ThemeToggle />,
-          }}
-        />
-      </Stack>
-      <PortalHost />
-    </ThemeProvider>
+    // <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+    //   <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+    //   <Stack>
+    //     <Stack.Screen
+    //       name="index"
+    //       options={{
+    //         title: "Starter Base",
+    //         headerRight: () => <ThemeToggle />,
+    //       }}
+    //     />
+    //   </Stack>
+    //   <PortalHost />
+    // </ThemeProvider>
+    <Guard />
   );
 }
 
 const useIsomorphicLayoutEffect =
-  Platform.OS === 'web' && typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
+  Platform.OS === "web" && typeof window === "undefined"
+    ? React.useEffect
+    : React.useLayoutEffect;
 
 function useSetWebBackgroundClassName() {
   useIsomorphicLayoutEffect(() => {
     // Adds the background color to the html element to prevent white background on overscroll.
-    document.documentElement.classList.add('bg-background');
+    document.documentElement.classList.add("bg-background");
   }, []);
 }
 
 function useSetAndroidNavigationBar() {
   React.useLayoutEffect(() => {
-    setAndroidNavigationBar(Appearance.getColorScheme() ?? 'light');
+    setAndroidNavigationBar(Appearance.getColorScheme() ?? "light");
   }, []);
 }
 
