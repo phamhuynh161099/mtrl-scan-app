@@ -6,7 +6,7 @@ import {
   Theme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Slot, Stack, useRouter, useSegments } from "expo-router";
+import { Slot, SplashScreen, Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { ActivityIndicator, Appearance, Platform, View } from "react-native";
@@ -39,31 +39,37 @@ const usePlatformSpecificSetup = Platform.select({
 
 const Guard = () => {
   // Lấy state và actions từ store của Zustand
-  const { user, isLoading, checkAuthStatus } = useAuthStore();
+  const { user, isLoading, setInitialLoadComplete } = useAuthStore();
   const segments = useSegments();
   const router = useRouter();
 
   // 1. Chạy kiểm tra trạng thái đăng nhập một lần khi app mở
   React.useEffect(() => {
-    checkAuthStatus();
-  }, []);
+    setInitialLoadComplete();
+  }, [setInitialLoadComplete]);
 
   // 2. Chạy logic điều hướng mỗi khi user hoặc trạng thái loading thay đổi
   React.useEffect(() => {
     if (isLoading) return; // Nếu đang kiểm tra thì không làm gì cả
 
-    const inPrivateGroup = segments[0] === "(private)";
-
-    if (!user && inPrivateGroup) {
-      // Chưa đăng nhập, cố vào trang private -> về login
+    const currentTopLevelSegment = segments[0] ?? "";
+    const isInAuthRoute = currentTopLevelSegment === "(private)";
+    const isInPublicRoute = currentTopLevelSegment === "(public)";
+    if (!user && isInAuthRoute) {
+      // Người dùng chưa đăng nhập nhưng đang ở khu vực yêu cầu đăng nhập
       router.replace("/(public)/login");
-      console.info("Không có quyền truy cập");
-    } else if (user && !inPrivateGroup) {
-      // Đảm bảo rằng route này tồn tại và đúng
+    } else if (user && isInPublicRoute) {
+      // Người dùng đã đăng nhập nhưng đang ở khu vực công khai (screen login)
+      router.replace("/(private)/(drawer)/(tabs)");
+    } else if (
+      user &&
+      !isInAuthRoute &&
+      !isInPublicRoute &&
+      segments.length > 0
+    ) {
       router.replace("/(private)/(drawer)/(tabs)");
     }
-
-    // router.replace('/(private)/(drawer)/(tabs)');
+    SplashScreen.hideAsync();
   }, [user, isLoading, segments]);
 
   if (isLoading) {
@@ -74,7 +80,13 @@ const Guard = () => {
     );
   }
 
-  return <Slot />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(public)" />
+      <Stack.Screen name="(private)" />
+      {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
+    </Stack>
+  );
 };
 
 export default function RootLayout() {
@@ -84,16 +96,7 @@ export default function RootLayout() {
   return (
     // <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
     //   <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-    //   <Stack>
-    //     <Stack.Screen
-    //       name="index"
-    //       options={{
-    //         title: "Starter Base",
-    //         headerRight: () => <ThemeToggle />,
-    //       }}
-    //     />
-    //   </Stack>
-    //   <PortalHost />
+    //   <Guard />
     // </ThemeProvider>
     <Guard />
   );

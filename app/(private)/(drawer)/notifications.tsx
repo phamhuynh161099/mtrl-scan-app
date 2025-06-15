@@ -7,7 +7,7 @@ export default function Notifications() {
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <Text>Trang riêng tư</Text>
       <Text>Xin chào, {user?.name}!</Text>
-      <Button title="Đăng xuất" onPress={signOut} />
+      <Button title="Logout" onPress={signOut} />
     </View>
   );
 }

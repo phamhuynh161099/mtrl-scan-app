@@ -16,15 +16,29 @@ export default function BarcodeScannerScreen() {
   // --- BƯỚC 1: GỌI TẤT CẢ CÁC HOOK Ở CẤP CAO NHẤT ---
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice("back");
-  const [isScanning, setIsScanning] = useState(true);
+  const [isScanning, setIsScanning] = useState(false);
   const [scannedCode, setScannedCode] = useState<{
     type: string;
     value: string;
   } | null>(null);
 
-  // Di chuyển useCodeScanner lên đây, trước tất cả các điều kiện trả về.
   const codeScanner = useCodeScanner({
-    codeTypes: ["qr", "code-128"],
+    codeTypes: [
+      "code-128",
+      "code-39",
+      "code-93",
+      "codabar",
+      // "ean-13",
+      // "ean-8",
+      // "itf",
+      // "itf-14",
+      // "upc-e",
+      // "upc-a",
+      "qr",
+      // "pdf-417",
+      // "aztec",
+      // "data-matrix",
+    ],
     onCodeScanned: (codes: any) => {
       if (isScanning && codes.length > 0) {
         console.log(`Scanned ${codes.length} codes!`);
@@ -44,7 +58,6 @@ export default function BarcodeScannerScreen() {
   }, [hasPermission, requestPermission]);
 
   // --- BƯỚC 3: CÁC ĐIỀU KIỆN TRẢ VỀ (EARLY RETURNS) ---
-  // Bây giờ việc return sớm sẽ không ảnh hưởng đến số lượng hook được gọi.
   if (!hasPermission) {
     return (
       <View className="flex-1 justify-center items-center p-6 bg-background">

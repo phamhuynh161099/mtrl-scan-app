@@ -20,7 +20,8 @@ export default function Login() {
       // const res = await authApiRequest.sLogin({ username, password });
       // console.log("res", res);
       // console.log("Đăng nhập với:", { username, password });
-      signIn(); // Gọi hàm signIn từ store
+      signIn({ name: username, email: password }); // Gọi hàm signIn từ store
+      router.push("/(private)/(drawer)/(tabs)");
     } catch (error) {
       console.error("error", error);
       Alert.alert("Lỗi", "Tên người dùng hoặc mật khẩu không đúng.");
@@ -49,8 +50,9 @@ export default function Login() {
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          title="Force go to private (Dev)"
+          title="Force go to private (-Dev-)"
           onPress={() => {
+            signIn({ name: "temp", email: "temp" });
             router.push("/(private)/(drawer)/(tabs)");
           }}
         />

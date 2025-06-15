@@ -1,6 +1,7 @@
 // app/(drawer)/_layout.js
 import { Ionicons } from "@expo/vector-icons";
 import { Drawer } from "expo-router/drawer";
+import { ThemeToggle } from "~/components/ThemeToggle";
 
 export default function DrawerLayout() {
   return (
@@ -8,13 +9,14 @@ export default function DrawerLayout() {
       screenOptions={{
         headerTintColor: "#000", // Màu của nút back và title
         drawerActiveTintColor: "blue", // Màu của mục đang được chọn trong drawer
+        // headerRight: () => <ThemeToggle />,
       }}
     >
       <Drawer.Screen
         name="(tabs)" // <--- Tên này phải khớp với tên thư mục group của tabs
         options={{
           drawerLabel: "Home",
-          title: "Home",
+          title: "Home.",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
