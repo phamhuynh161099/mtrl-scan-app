@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, View, StyleSheet } from "react-native";
+import { Dimensions, View } from "react-native";
 import {
   Camera,
   useCameraDevice,
@@ -10,34 +10,49 @@ import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 
 const screenHeight = Dimensions.get("window").height;
-const cameraHeight = screenHeight * 0.5; // 50% chiều cao màn hình
+const cameraHeight = screenHeight * 0.5;
 
 export default function BarcodeScannerScreen() {
+  // --- BƯỚC 1: GỌI TẤT CẢ CÁC HOOK Ở CẤP CAO NHẤT ---
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice("back");
   const [isScanning, setIsScanning] = useState(true);
-
-  //* State quản lý mã code được scan
   const [scannedCode, setScannedCode] = useState<{
     type: string;
     value: string;
   } | null>(null);
 
-  // Tự động yêu cầu quyền khi component mount nếu chưa có
+  // Di chuyển useCodeScanner lên đây, trước tất cả các điều kiện trả về.
+  const codeScanner = useCodeScanner({
+    codeTypes: ["qr", "code-128"],
+    onCodeScanned: (codes: any) => {
+      if (isScanning && codes.length > 0) {
+        console.log(`Scanned ${codes.length} codes!`);
+        const code = codes[0];
+        setScannedCode(code);
+        setIsScanning(false);
+      }
+    },
+  });
+
+  // --- BƯỚC 2: XỬ LÝ CÁC HOOK PHỤ THUỘC (NẾU CÓ) ---
   useEffect(() => {
+    // Chỉ yêu cầu quyền nếu chưa có.
     if (!hasPermission) {
       requestPermission();
     }
   }, [hasPermission, requestPermission]);
 
+  // --- BƯỚC 3: CÁC ĐIỀU KIỆN TRẢ VỀ (EARLY RETURNS) ---
+  // Bây giờ việc return sớm sẽ không ảnh hưởng đến số lượng hook được gọi.
   if (!hasPermission) {
     return (
       <View className="flex-1 justify-center items-center p-6 bg-background">
         <Text className="text-lg text-foreground text-center mb-4 capitalize">
-          This app need camera permission to work!
+          This app needs camera permission to work!
         </Text>
         <Button onPress={requestPermission}>
-          <Text className="capitalize">Request Permission Camera</Text>
+          <Text className="capitalize">Request Camera Permission</Text>
         </Button>
       </View>
     );
@@ -47,47 +62,52 @@ export default function BarcodeScannerScreen() {
     return (
       <View className="flex-1 justify-center items-center p-6 bg-background">
         <Text className="text-lg text-foreground text-center capitalize">
-          Not Found Camera
+          Camera Not Found
         </Text>
       </View>
     );
   }
 
-  const toggleScan = () => {
-    setIsScanning(!isScanning);
+  // --- BƯỚC 4: RENDER GIAO DIỆN CHÍNH ---
+  const handleScanAgain = () => {
+    setScannedCode(null);
+    setIsScanning(true);
   };
-
-  const codeScanner = useCodeScanner({
-    codeTypes: ["qr", "code-128"],
-    onCodeScanned: (codes: any) => {
-      if (codes.length > 0) {
-        setScannedCode(codes[0]);
-      }
-    },
-  });
 
   return (
     <View className="flex-1">
-      <View className="mx-2 p-2 bg-white rounded-md shadow-md">
-        <Text className="text-black">{scannedCode?.value}</Text>
+      <View className="m-4 p-4 bg-white rounded-md shadow-md min-h-[80px]">
+        <Text className="text-base font-bold text-black">Scanned Value:</Text>
+        <Text className="text-lg text-blue-600 mt-1">{scannedCode?.value}</Text>
       </View>
 
-      <Camera
-        style={{ height: cameraHeight, width: "100%" }}
-        device={device}
-        isActive={isScanning}
-        codeScanner={codeScanner}
-      />
+      {/* Chỉ hiển thị camera khi đang quét và có thiết bị */}
+      {isScanning && (
+        <Camera
+          style={{ height: cameraHeight, width: "100%" }}
+          device={device}
+          isActive={true}
+          codeScanner={codeScanner}
+        />
+      )}
+
       <View className="absolute bottom-12 left-0 right-0 items-center px-6">
-        <Button onPress={toggleScan} className="w-full max-w-xs">
-          <Text>{isScanning ? "Turn On" : "Turn Off"}</Text>
-        </Button>
+        {scannedCode ? (
+          <Button
+            onPress={handleScanAgain}
+            className="w-full max-w-xs bg-green-600"
+          >
+            <Text>Scan Again</Text>
+          </Button>
+        ) : (
+          <Button
+            onPress={() => setIsScanning(!isScanning)}
+            className="w-full max-w-xs"
+          >
+            <Text>{isScanning ? "Stop Scanning" : "Start Scanning"}</Text>
+          </Button>
+        )}
       </View>
     </View>
   );
 }
-
-// Nếu không còn style nào khác được định nghĩa trong StyleSheet, bạn có thể xóa bỏ phần này
-// và cả import StyleSheet nếu không dùng ở đâu khác trong file.
-// Tuy nhiên, nếu có kế hoạch thêm style khác bằng StyleSheet, bạn có thể giữ lại cấu trúc:
-// const styles = StyleSheet.create({});
