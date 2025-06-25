@@ -1,7 +1,9 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react"; // Thêm useState
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native"; // Thêm TextInput, StyleSheet, Alert
+import { Alert, StyleSheet, Text, TextInput, View } from "react-native"; // Thêm TextInput, StyleSheet, Alert
 import { useAuthStore } from "../../store/authStore"; // <--- Thay đổi ở đây
+import authApiRequest from "~/apis/auth.api";
+import { Button } from "~/components/ui/button";
 
 export default function Login() {
   const router = useRouter();
@@ -17,10 +19,9 @@ export default function Login() {
 
     console.log("start");
     try {
-      // const res = await authApiRequest.sLogin({ username, password });
-      // console.log("res", res);
-      // console.log("Đăng nhập với:", { username, password });
-      signIn({ name: username, email: password }); // Gọi hàm signIn từ store
+      const response = await authApiRequest.sLogin({ username, password });
+      const result = response.payload;
+      signIn({ name: result.user_name, email: result.email }); // Gọi hàm signIn từ store
       router.push("/(private)/(drawer)/(tabs)");
     } catch (error) {
       console.error("error", error);
@@ -46,16 +47,21 @@ export default function Login() {
         secureTextEntry
       />
       <View style={styles.buttonContainer}>
-        <Button title="Đăng nhập" onPress={handleLogin} />
+        <Button onPress={handleLogin}>
+          <Text className="text-white font-bold text-xl">Login</Text>
+        </Button>
       </View>
       <View style={styles.buttonContainer}>
         <Button
-          title="Force go to private (-Dev-)"
           onPress={() => {
             signIn({ name: "temp", email: "temp" });
             router.push("/(private)/(drawer)/(tabs)");
           }}
-        />
+        >
+          <Text className="text-white font-bold text-xl">
+            Force go to private (-Dev-)
+          </Text>
+        </Button>
       </View>
     </View>
   );

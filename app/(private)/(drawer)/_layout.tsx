@@ -1,15 +1,19 @@
 // app/(drawer)/_layout.js
 import { Ionicons } from "@expo/vector-icons";
 import { Drawer } from "expo-router/drawer";
-import { ThemeToggle } from "~/components/ThemeToggle";
+import CustomDrawerContent from "~/components/(components)/CustomerDrawerContent";
 
 export default function DrawerLayout() {
   return (
     <Drawer
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerTintColor: "#000", // Màu của nút back và title
-        drawerActiveTintColor: "blue", // Màu của mục đang được chọn trong drawer
+        drawerActiveTintColor: "#fff", // Màu của mục đang được chọn trong drawer
         // headerRight: () => <ThemeToggle />,
+
+        drawerHideStatusBarOnOpen: true, // Ẩn thanh trạng thái khi mở drawer
+        drawerActiveBackgroundColor: "#5363df",
       }}
     >
       <Drawer.Screen
@@ -23,7 +27,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="notifications" // <--- Tên này phải khớp với tên file notifications.js
+        name="notifications"
         options={{
           drawerLabel: "Notifications",
           title: "Notifications",

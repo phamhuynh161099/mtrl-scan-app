@@ -15,6 +15,6 @@ export default PublicLayout;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ensure the layout view takes up available space
+    flex: 1,
   },
 });

@@ -1,3 +1,4 @@
+import { ScanBarcode } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { Dimensions, View } from "react-native";
 import {
@@ -6,8 +7,11 @@ import {
   useCameraPermission,
   useCodeScanner,
 } from "react-native-vision-camera";
+import materialApiRequest from "~/apis/material.api";
+import CardInfomMaterial from "~/components/(components)/card-info-material";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { classifyTypeBarcode } from "~/utils/utils";
 
 const screenHeight = Dimensions.get("window").height;
 const cameraHeight = screenHeight * 0.5;
@@ -22,14 +26,16 @@ export default function BarcodeScannerScreen() {
     value: string;
   } | null>(null);
 
+  const [mtrlInfo,setMtrlInfo] = useState<any>()
+
   const codeScanner = useCodeScanner({
     codeTypes: [
       "code-128",
       "code-39",
       "code-93",
       "codabar",
-      // "ean-13",
-      // "ean-8",
+      "ean-13",
+      "ean-8",
       // "itf",
       // "itf-14",
       // "upc-e",
@@ -48,6 +54,33 @@ export default function BarcodeScannerScreen() {
       }
     },
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let parameter = {
+          data: {
+            barcode: scannedCode?.value,
+            kind: classifyTypeBarcode(scannedCode?.value as string),
+          },
+        };
+        const response: any = await materialApiRequest.sScanInforV2(parameter);
+        console.log('response',response.payload.etc.data[0])
+
+        let _result = response.payload.etc.data[0];
+        setMtrlInfo(_result);
+
+      } catch (error) {
+        console.error("error", error);
+      } finally {
+      }
+    };
+
+    if (scannedCode?.value) {
+      fetchData();
+
+    }
+  }, [scannedCode]);
 
   // --- BƯỚC 2: XỬ LÝ CÁC HOOK PHỤ THUỘC (NẾU CÓ) ---
   useEffect(() => {
@@ -104,6 +137,12 @@ export default function BarcodeScannerScreen() {
         />
       )}
 
+      {
+        mtrlInfo && (
+          <CardInfomMaterial data={mtrlInfo} />
+        )
+      }
+
       <View className="absolute bottom-12 left-0 right-0 items-center px-6">
         {scannedCode ? (
           <Button
@@ -120,7 +159,7 @@ export default function BarcodeScannerScreen() {
             <Text>{isScanning ? "Stop Scanning" : "Start Scanning"}</Text>
           </Button>
         )}
-      </View>
+      </View> 
     </View>
   );
 }

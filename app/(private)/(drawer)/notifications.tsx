@@ -1,5 +1,5 @@
 import { Button, Text, View } from "react-native";
-import { useAuthStore } from "../../../store/authStore"; // <--- Thay đổi ở đây
+import { useAuthStore } from "../../../store/authStore";
 
 export default function Notifications() {
   const { signOut, user } = useAuthStore();

@@ -5,7 +5,6 @@ import Animated, {
   FadeOutDown,
   LayoutAnimationConfig,
 } from "react-native-reanimated";
-import { Info } from "~/lib/icons/Info";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -18,18 +17,14 @@ import {
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import { Text } from "~/components/ui/text";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuthStore } from "~/store/authStore";
 
 const GITHUB_AVATAR_URI =
   "https://static.wikia.nocookie.net/lookism/images/e/e9/Seongji_Yook.jpeg/revision/latest/scale-to-width-down/1000?cb=20240105100557";
 
 export default function HomeScreen() {
   const [progress, setProgress] = React.useState(78);
+  const { user } = useAuthStore();
 
   function updateProgressValue() {
     setProgress(Math.floor(Math.random() * 100));
@@ -45,7 +40,7 @@ export default function HomeScreen() {
             </AvatarFallback>
           </Avatar>
           <View className="p-3" />
-          <CardTitle className="pb-2 text-center">Pham Huynh</CardTitle>
+          <CardTitle className="pb-2 text-center">{user?.name}</CardTitle>
           <View className="flex-row">
             <CardDescription className="hidden"></CardDescription>
           </View>
