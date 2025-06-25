@@ -121,7 +121,7 @@ export default function BarcodeScannerScreen() {
   };
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 px-2">
       <View className="m-4 p-4 bg-white rounded-md shadow-md min-h-[80px]">
         <Text className="text-base font-bold text-black">Scanned Value:</Text>
         <Text className="text-lg text-blue-600 mt-1">{scannedCode?.value}</Text>
