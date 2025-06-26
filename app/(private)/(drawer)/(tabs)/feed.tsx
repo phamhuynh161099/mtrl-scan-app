@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import materialApiRequest from "~/apis/material.api";
 import CardInfomMaterial from "../../../../components/(components)/card-info-material";
+import Drawer from "expo-router/drawer";
 
 const feed = () => {
   const router = useRouter();
@@ -51,6 +52,7 @@ const feed = () => {
           ))}
         </View>
       </ScrollView> */}
+      {/* <Drawer.Screen options={{ headerTitle: "Feeds" }} /> */}
 
       <FlatList
         className="p-2"

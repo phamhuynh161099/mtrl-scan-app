@@ -3,7 +3,6 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 const PublicLayout = () => {
-  // Renamed component for clarity
   return (
     <View style={styles.container}>
       <Slot />

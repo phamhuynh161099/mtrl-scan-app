@@ -5,6 +5,7 @@ import {
 } from "@react-navigation/drawer";
 import { Image, Linking, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -21,7 +22,7 @@ export default function CustomDrawerContent(props: any) {
         <View
           className="items-center p-2 bg-[#dde3fe]"
           style={{
-            paddingTop: top,
+            paddingTop: top + 8,
           }}
         >
           <Image
@@ -47,7 +48,7 @@ export default function CustomDrawerContent(props: any) {
                 Linking.openURL("https://reactnative.dev/docs/modal")
               }
               icon={({ color, size }) => (
-                <Ionicons name="home-outline" size={size} color={color} />
+                <Entypo name="info" size={size} color={color} />
               )}
             />
           </View>

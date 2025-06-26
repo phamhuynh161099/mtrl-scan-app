@@ -11,21 +11,33 @@ export default function DrawerLayout() {
         headerTintColor: "#000", // Màu của nút back và title
         drawerActiveTintColor: "#fff", // Màu của mục đang được chọn trong drawer
         // headerRight: () => <ThemeToggle />,
-
-        drawerHideStatusBarOnOpen: true, // Ẩn thanh trạng thái khi mở drawer
+        drawerHideStatusBarOnOpen: false, // Ẩn thanh trạng thái khi mở drawer
         drawerActiveBackgroundColor: "#5363df",
       }}
     >
       <Drawer.Screen
-        name="(tabs)" // <--- Tên này phải khớp với tên thư mục group của tabs
+        name="(tabs)"
         options={{
           drawerLabel: "Home",
-          title: "Home.",
+          title: "Home",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
         }}
       />
+
+      <Drawer.Screen
+        name="useful-image-func/(tabs)"
+        options={{
+          drawerLabel: "Useful Image Function",
+          title: "",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="image" size={size} color={color} />
+          ),
+        }}
+      />
+
+
       <Drawer.Screen
         name="notifications"
         options={{

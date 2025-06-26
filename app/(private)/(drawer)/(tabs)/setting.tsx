@@ -1,5 +1,6 @@
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
+import Drawer from "expo-router/drawer";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "~/components/ui/button";
@@ -12,21 +13,24 @@ const setting = () => {
     useAuthStore.getState().signOut();
   };
 
-  const navigation =  useNavigation();
+  const navigation = useNavigation();
   const onToggle = () => {
-    navigation.dispatch(DrawerActions.openDrawer())
-  }
+    navigation.dispatch(DrawerActions.openDrawer());
+  };
 
   return (
-    <View className="flex-1 p-2 gap-2">
-      <Button onPress={onTouchClear}>
-        <Text className="text-white">Press Me</Text>
-      </Button>
+    <>
+      <Drawer.Screen options={{ title: "Settings" }} />
+      <View className="flex-1 p-2 gap-2">
+        <Button onPress={onTouchClear}>
+          <Text className="text-white">Press Me</Text>
+        </Button>
 
-      <Button onPress={onToggle}>
-        <Text className="text-white">Toggle Drawer</Text>
-      </Button>
-    </View>
+        <Button onPress={onToggle}>
+          <Text className="text-white">Toggle Drawer</Text>
+        </Button>
+      </View>
+    </>
   );
 };
 

@@ -83,7 +83,7 @@ const Guard = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(public)" />
-      <Stack.Screen name="(private)" />
+      <Stack.Screen name="(private)/(drawer)" />
       {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
     </Stack>
   );
