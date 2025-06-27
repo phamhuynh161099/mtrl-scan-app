@@ -44,7 +44,7 @@ const McsDetailCard = ({ data }: IMcsDetailCardProps) => {
     navigation.navigate("scan-mcs", {
       screen: "mcs-detail",
       params: {
-        mcsNo: data,
+        data: data,
       },
     });
   
@@ -60,7 +60,7 @@ const McsDetailCard = ({ data }: IMcsDetailCardProps) => {
           </CardHeader>
           <CardContent>
             <View className="">
-              <View className="p-4 border rounded-md shadow-md">
+              <View className="p-4 rounded-md shadow-md">
                 <Image
                 source={{ uri: previewImage }}
                 className="object-contain"
@@ -74,7 +74,7 @@ const McsDetailCard = ({ data }: IMcsDetailCardProps) => {
           <CardFooter>
             <Button className="flex flex-row gap-2" onPress={onPressRedirectMcsStack}>
               <MaterialIcons name="view-in-ar" size={24} color="white" />
-              <Text className="text-white font-bold">Detail</Text>
+              <Text className="text-white font-bold">View Detail</Text>
             </Button>
           </CardFooter>
         </Card>

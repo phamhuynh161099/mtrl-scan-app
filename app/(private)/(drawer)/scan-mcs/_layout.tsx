@@ -8,6 +8,10 @@ const StackLayout = () => {
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="mcs-detail"
+        options={{
+          title: "Mcs Detail",
+          headerShown: true,
+        }}
       />
     </Stack>
   );

@@ -1,6 +1,6 @@
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Dimensions, View } from "react-native";
+import { Dimensions, ScrollView, View } from "react-native";
 import {
   Camera,
   useCameraDevice,
@@ -122,7 +122,7 @@ export default function ScanInforTab() {
  
 
   return (
-    <View className="flex-1 px-2">
+    <ScrollView className="flex-1 px-2">
       <View className="m-4 p-4 bg-white rounded-md shadow-md min-h-[80px]">
         <Text className="text-base font-bold text-black">Scanned Value:</Text>
         <Text className="text-lg text-blue-600 mt-1">{scannedCode?.value}</Text>
@@ -162,11 +162,11 @@ export default function ScanInforTab() {
           onPress={() => {
             router.push("/(private)/(drawer)/scan-mcs/mcs-detail");
           }}
-          className="w-full max-w-xs mt-2"
+          className="w-full max-w-xs mt-2 hidden"
         >
           <Text>Go to Mcs Detail</Text>
         </Button>
       </View>
-    </View>
+    </ScrollView>
   );
 }
