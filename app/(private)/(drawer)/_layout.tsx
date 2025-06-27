@@ -37,6 +37,17 @@ export default function DrawerLayout() {
         }}
       />
 
+      <Drawer.Screen
+        name="scan-mcs"
+        options={{
+          drawerLabel: "Scan Mcsr",
+          title: "",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="image" size={size} color={color} />
+          ),
+        }}
+      />
+
 
       <Drawer.Screen
         name="notifications"
