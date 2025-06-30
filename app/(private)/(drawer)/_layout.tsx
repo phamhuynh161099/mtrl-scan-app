@@ -60,6 +60,17 @@ export default function DrawerLayout() {
       />
 
       <Drawer.Screen
+        name="borrow-return-management"
+        options={{
+          drawerLabel: "Borrow/Return Management",
+          title: "",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="browsers" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
         name="rfid-rfc-reader"
         options={{
           drawerLabel: "RFID/RFC Reader",
