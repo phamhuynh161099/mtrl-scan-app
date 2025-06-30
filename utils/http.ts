@@ -3,6 +3,7 @@ import { LOCAL_STORAGE_KEYS } from "~/constants/localStorage.const";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { normalizePath } from "./utils";
 import { envConfig } from "~/constants/config.const";
+import { useAuthStore } from "~/store/authStore";
 
 
 type CustomOptions = Omit<RequestInit, 'method'> & {
@@ -129,6 +130,8 @@ const request = async <Response>(
         // 2. Errors from res.json() (res is defined, but parsing failed).
         console.error('Fetch API or JSON parsing error:', error);
 
+
+        //  useAuthStore.getState().signOut();
         await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
         await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ZUST_ACCOUNT);
 
@@ -165,6 +168,7 @@ const request = async <Response>(
                 payload: EnityErrorPayload // Assumes parsedPayload is EnityErrorPayload
             })
         } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
+            // useAuthStore.getState().signOut();
             await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
             await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ZUST_ACCOUNT);
             // Throw HttpError; app handles navigation.
@@ -188,6 +192,7 @@ const request = async <Response>(
             console.warn('Token not found in auth/getToken response payload');
         }
     } else if (normalizedRequestUrl === 'auth/logOut') {
+        useAuthStore.getState().signOut();
         await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
         await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ZUST_ACCOUNT);
     }

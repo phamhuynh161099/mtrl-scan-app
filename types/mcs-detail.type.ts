@@ -2,6 +2,11 @@
  *Interface của Mcs Detail
  */
 export interface IMCSDetail {
+  MODEL_NUMBER_M:string;
+  MIDSOLE_NUMBER_M:string;
+  OUTSOLE_NUMBER_M:string;
+  SILHOUETTE_NUMBER_M:string;
+  REP_ARTICLE_NUMBER_A:string;
   ARTICLE_NUMBER_A:string,
   SPORTS_CATEGORY_M: string;
   CURRENT_STAGE: string;
