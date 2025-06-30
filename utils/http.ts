@@ -132,8 +132,8 @@ const request = async <Response>(
 
 
         //  useAuthStore.getState().signOut();
-        await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
-        await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ZUST_ACCOUNT);
+        // await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
+        // await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ZUST_ACCOUNT);
 
         let errorStatus = 0; // Default for network error or pre-response error
         let errorPayloadContent: any = { message: 'Request failed or response could not be processed.' };
@@ -169,8 +169,11 @@ const request = async <Response>(
             })
         } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
             // useAuthStore.getState().signOut();
-            await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
-            await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ZUST_ACCOUNT);
+            // await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
+            // await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ZUST_ACCOUNT);
+
+
+
             // Throw HttpError; app handles navigation.
             throw new HttpError({
                 status: AUTHENTICATION_ERROR_STATUS,

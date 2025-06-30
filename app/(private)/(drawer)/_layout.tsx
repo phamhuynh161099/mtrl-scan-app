@@ -48,6 +48,28 @@ export default function DrawerLayout() {
         }}
       />
 
+      <Drawer.Screen
+        name="scan-mtrl"
+        options={{
+          drawerLabel: "Material Info",
+          title: "",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="leaf" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="rfid-rfc-reader"
+        options={{
+          drawerLabel: "RFID/RFC Reader",
+          title: "",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="card" size={size} color={color} />
+          ),
+        }}
+      />
+
 
       <Drawer.Screen
         name="notifications"
