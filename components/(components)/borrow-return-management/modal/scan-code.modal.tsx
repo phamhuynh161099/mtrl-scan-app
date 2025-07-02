@@ -1,68 +1,125 @@
-import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Dimensions,
-  ScrollView,
+  Modal,
+  StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import ScanCodeModal from "~/components/(components)/borrow-return-management/modal/scan-code.modal";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  Camera,
+  useCameraDevice,
+  useCameraPermission,
+  useCodeScanner,
+} from "react-native-vision-camera";
 import { Button } from "~/components/ui/button";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 const cameraHeight = screenHeight * 0.8; //* 60 độ cao của màn hình
 const operatorHeight = screenHeight * 0.3;
 
-const BorrowTab = () => {
-  const [isOpenScanModal, setIsOpenScanModal] = useState<boolean>(false);
-  const onClickHandleCloseScanModal = () => {
-    setIsOpenScanModal(false);
-  };
+interface IScanCodeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onScanSuccess: (code: string) => void;
+}
+
+const ScanCodeModal = ({
+  isOpen,
+  onClose,
+  onScanSuccess,
+}: IScanCodeModalProps) => {
+  //--- Khai báo các state liên quan đến camera scan ---
+  const { hasPermission, requestPermission } = useCameraPermission();
+  const device = useCameraDevice("back");
+  const [isScanning, setIsScanning] = useState(true);
+  const [scannedCode, setScannedCode] = useState<{
+    type: string;
+    value: string;
+  } | null>(null);
 
   const [mtrlInfo, setMtrlInfo] = useState<any>();
 
-  const onClickAcceptCode = (code: string) => {
-    Alert.alert("Scanned Code", `The scanned code is: ${code}`, [
-      {
-        text: "OK",
-        onPress: () => console.log("OK Pressed"),
-      },
-    ]);
-    setMtrlInfo(code);
+  const codeScanner = useCodeScanner({
+    codeTypes: [
+      "code-128",
+      "code-39",
+      "code-93",
+      "codabar",
+      "ean-13",
+      "ean-8",
+      "qr",
+    ],
+    onCodeScanned: (codes: any) => {
+      if (isScanning && codes.length > 0) {
+        console.log(`Scanned ${codes.length} codes!`);
+        const code = codes[0];
+        setScannedCode(code);
+        // setIsScanning(false);
+      }
+    },
+  });
+
+  // --- Yêu cầu quyền ---
+  useEffect(() => {
+    // Chỉ yêu cầu quyền nếu chưa có.
+    if (!hasPermission) {
+      requestPermission();
+    }
+  }, [hasPermission, requestPermission]);
+
+  // --- Nếu không có quyền ---
+  if (!hasPermission) {
+    return (
+      <View className="flex-1 justify-center items-center p-6 bg-background">
+        <Text className="text-lg text-foreground text-center mb-4 capitalize">
+          This app needs camera permission to work!
+        </Text>
+        <Button onPress={requestPermission}>
+          <Text className="capitalize">Request Camera Permission</Text>
+        </Button>
+      </View>
+    );
+  }
+
+  // --- Nếu không có camera ---
+  if (device == null) {
+    return (
+      <View className="flex-1 justify-center items-center bg-background">
+        <Text className="text-lg text-foreground text-center capitalize">
+          Camera Not Found
+        </Text>
+      </View>
+    );
+  }
+
+  const onClickAcceptCode = () => {
+    if (scannedCode?.value) {
+      onClose();
+      onScanSuccess(scannedCode.value);
+    }
   };
 
   return (
     <>
-      <ScrollView className="flex-1 p-2">
-        <View className="p-2 shadow-md rounded-md bg-white">
-          <Button
-            className="flex-grow-0 flex-row items-center justify-between"
-            onPress={() => {
-              setIsOpenScanModal(true);
-              // setIsScanning(true);
-            }}
-          >
-            <Ionicons name="scan-outline" size={24} color="white" />
-            <Text className="text-white font-bold">Scan</Text>
-          </Button>
-        </View>
-      </ScrollView>
-
       {/* Fullscreen Modal */}
-      {/* <Modal
-        visible={isOpenScanModal}
+      <Modal
+        visible={isOpen}
         transparent={true}
         animationType="fade"
-        onRequestClose={onClickHandleCloseScanModal}
+        onRequestClose={onClose}
       >
         <SafeAreaView className="flex-1 bg-black">
           <StatusBar barStyle="light-content" backgroundColor="black" />
 
+          {/* Header with close button */}
           <View className="absolute top-0 left-0 right-0 z-10 flex-row justify-between items-center p-4">
             <TouchableOpacity
-              onPress={onClickHandleCloseScanModal}
+              onPress={onClose}
               className="bg-black/80 rounded-full p-3"
             >
               <Ionicons name="arrow-back" size={24} color="white" />
@@ -74,13 +131,14 @@ const BorrowTab = () => {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={onClickHandleCloseScanModal}
+              onPress={onClose}
               className="bg-black/80 rounded-full p-3"
             >
               <Ionicons name="information" size={24} color="white" />
             </TouchableOpacity>
           </View>
 
+          {/* Fullscreen Pager */}
           <View className="flex-1">
             <View className="">
               {isScanning && (
@@ -109,14 +167,17 @@ const BorrowTab = () => {
               <View className="gap-2 justify-center flex-1">
                 <View className="rounded-md bg-gray-200/50  p-4">
                   <Text className="text-gray-500 font-semibold ">
-                    Scanned Code 
+                    Scanned Code
                   </Text>
                   <Text className="text-xl font-bold">
                     {scannedCode?.value}
                   </Text>
                 </View>
 
-                <Button className="flex justify-center" onPress={()=>onClickAcceptCode()}>
+                <Button
+                  className="flex justify-center"
+                  onPress={() => onClickAcceptCode()}
+                >
                   <Text className="text-white capitalize text-xl font-bold">
                     Accept Code.
                   </Text>
@@ -125,31 +186,14 @@ const BorrowTab = () => {
             </View>
           </View>
         </SafeAreaView>
-      </Modal> */}
-
-      {isOpenScanModal && (
-        <>
-          <ScanCodeModal
-            isOpen={isOpenScanModal}
-            onClose={onClickHandleCloseScanModal}
-            onScanSuccess={(code: string) => onClickAcceptCode(code)}
-          />
-        </>
-      )}
+      </Modal>
     </>
   );
 };
 
-export default BorrowTab;
+export default ScanCodeModal;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  modalPager: {
-    flex: 1,
-  },
-});
+const styles = StyleSheet.create({});
 
 const SimpleCorners = ({
   size = 200,

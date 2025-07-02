@@ -23,7 +23,7 @@ export default function ScanInfoTab() {
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice("back");
   const [isScanning, setIsScanning] = useState(false);
-  const [classifyKind,setClassifyKind] = useState<string>('')
+  const [classifyKind, setClassifyKind] = useState<string>("");
   const [scannedCode, setScannedCode] = useState<{
     type: string;
     value: string;
@@ -61,16 +61,16 @@ export default function ScanInfoTab() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         setClassifyKind(classifyTypeBarcode(scannedCode?.value as string));
-         let parameter = {
+        let parameter = {
           data: {
             barcode: scannedCode?.value,
             kind: classifyTypeBarcode(scannedCode?.value as string),
           },
         };
 
-        const response: any = (await materialApiRequest.sScanInforV2(parameter)).payload
+        const response: any = (await materialApiRequest.sScanInforV2(parameter))
+          .payload;
         if (response.etc.data.length > 0) {
           let _result = response.etc.data[0];
           setMtrlInfo(_result);
@@ -126,8 +126,6 @@ export default function ScanInfoTab() {
     setIsScanning(true);
   };
 
- 
-
   return (
     <ScrollView className="flex-1 px-2">
       <View className="m-4 p-4 bg-white rounded-md shadow-md min-h-[80px]">
@@ -147,14 +145,13 @@ export default function ScanInfoTab() {
         </View>
       )}
 
-      {mtrlInfo && !isScanning && <MtrlDetailCard classifyKind={classifyKind} data={mtrlInfo} />}
+      {mtrlInfo && !isScanning && (
+        <MtrlDetailCard classifyKind={classifyKind} data={mtrlInfo} />
+      )}
 
       <View className="mt-2 right-0 items-center px-6">
         {scannedCode ? (
-          <Button
-            onPress={handleScanAgain}
-            className="w-full max-w-xs"
-          >
+          <Button onPress={handleScanAgain} className="w-full max-w-xs">
             <Text>Scan Again</Text>
           </Button>
         ) : (

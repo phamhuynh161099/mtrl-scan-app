@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import { IMCSDetail } from "~/types/mcs-detail.type";
 import { Image } from "expo-image";
 import PagerView from "react-native-pager-view";
@@ -112,6 +112,8 @@ const MtrlDetailStack = () => {
   const route = useRoute<RouteProp<{ McsDetail: any }, "McsDetail">>();
   const dataPrams = route?.params?.data;
 
+  const navigation = useNavigation();
+
   const [mcsInfo, setMcsInfo] = useState<any | null>(null);
   const [mcsImages, setMcsImages] = useState<(string | null)[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -120,6 +122,24 @@ const MtrlDetailStack = () => {
   // Modal states
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  // Ẩn drawer header, hiện stack header
+  React.useLayoutEffect(() => {
+    navigation.getParent()?.setOptions({
+      headerShown: false, // Ẩn drawer header
+    });
+
+    navigation.setOptions({
+      headerShown: true, // Hiện stack header
+      title: "Màn hình đặc biệt",
+    });
+
+    return () => {
+      navigation.getParent()?.setOptions({
+        headerShown: true, // Đảm bảo rằng drawer header được hiển thị lại khi rời khỏi màn hình này
+      });
+    };
+  }, [navigation]);
 
   useEffect(() => {
     if (dataPrams) {
