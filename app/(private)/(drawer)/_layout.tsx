@@ -81,7 +81,6 @@ export default function DrawerLayout() {
         }}
       />
 
-
       <Drawer.Screen
         name="notifications"
         options={{
@@ -89,6 +88,17 @@ export default function DrawerLayout() {
           title: "Notifications",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="notifications-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Drawer.Screen
+        name="useful-upload-file"
+        options={{
+          drawerLabel: "Useful Upload File",
+          title: "",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="cloud-upload" size={size} color={color} />
           ),
         }}
       />

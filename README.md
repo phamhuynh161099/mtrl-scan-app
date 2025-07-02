@@ -17,3 +17,7 @@ A starting point to help you set up your project quickly and use the common comp
 
 
 android:usesCleartextTraffic="true"
+
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
