@@ -14,6 +14,7 @@ export const classifyTypeBarcode = (barcode: string) => {
   let barcodeNotContainSubNumber = barcode.split("-")[0] || '';
 
   const regex = /\d{20}/; // Biểu thức chính quy để tìm kiếm 20 chữ số (\d) liên tiếp ({20})
+  const regex_number12 = /\d{12}/; // Biểu thức chính quy để tìm kiếm 12 chữ số (\d) liên tiếp ({12})
 
   if (barcodeNotContainSubNumber.startsWith("PAN")) {
     result_type = "Pantone"
@@ -21,6 +22,8 @@ export const classifyTypeBarcode = (barcode: string) => {
     result_type = "Rubber"
   } else if (regex.test(barcodeNotContainSubNumber)) {
     result_type = "Others"
+  } else if (regex_number12.test(barcodeNotContainSubNumber)) {
+    result_type = "Mcs"
   } else {
     result_type = "Material"
   }
