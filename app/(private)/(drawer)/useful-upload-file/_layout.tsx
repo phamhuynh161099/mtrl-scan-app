@@ -5,7 +5,7 @@ import { Slot, Stack } from "expo-router";
 const StackLayout = () => {
   return (
     <Stack screenOptions={{}}>
-      <Stack.Screen name="upload-file" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
     </Stack>
   );
 };

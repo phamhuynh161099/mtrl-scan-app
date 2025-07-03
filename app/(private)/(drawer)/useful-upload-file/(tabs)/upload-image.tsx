@@ -11,7 +11,11 @@ import {
 } from 'react-native';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 
-const UploadFileStack = () => {
+
+/**
+ **Tim hiểu về react-native-image-picker
+ */
+const UploadImageTab = () => {
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -97,14 +101,12 @@ const UploadFileStack = () => {
         });
       }
 
-      // Thay đổi URL này thành endpoint của server bạn
+    
       const response = await fetch('https://your-server.com/upload', {
         method: 'POST',
         body: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
-          // Thêm authorization header nếu cần
-          // 'Authorization': 'Bearer your-token',
+          'Content-Type': 'multipart/form-data'
         },
       });
 
@@ -130,10 +132,10 @@ const UploadFileStack = () => {
 
       {/* Image Selection Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Upload Ảnh</Text>
+        <Text style={styles.sectionTitle}>Upload Image</Text>
         
         <TouchableOpacity style={styles.button} onPress={selectImage}>
-          <Text style={styles.buttonText}>Chọn Ảnh</Text>
+          <Text style={styles.buttonText}>Select Image</Text>
         </TouchableOpacity>
 
         {selectedImage && (
@@ -149,7 +151,7 @@ const UploadFileStack = () => {
               {uploading ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Upload Ảnh</Text>
+                <Text style={styles.buttonText}>Upload Image</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -231,4 +233,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UploadFileStack;
+export default UploadImageTab;
