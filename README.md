@@ -21,3 +21,6 @@ android:usesCleartextTraffic="true"
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+cd android
+./gradlew assembleRelease
