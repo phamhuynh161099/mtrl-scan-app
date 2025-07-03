@@ -1,38 +1,74 @@
 import { Alert, Image, StyleSheet, Text, TextInput, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
 import { Button } from "~/components/ui/button";
 import { launchImageLibrary } from "react-native-image-picker";
 import userManagementApiRequest from "~/apis/user-management.api";
+import { useLoadingStore } from "~/store/loadingStore";
 
 const MyAccountStack = () => {
   const [formInfo, setFormInfo] = useState({
-    id: "25",
-    user_id: "adm",
-    user_name: "adm",
-    email: "phamhuynddh161099@gmail.com",
-    phone: "2211221",
-    department: "IST",
-    role: "admin",
-    create_date: "2025-03-12 10:54:27",
-    update_date: "2025-03-12 14:35:12",
-    image: "http://10.101.1.135:8280/upload/userImage/adm.jpg",
-    is_active: "true",
-    is_delete: "false",
-    delete_by: null,
-
+    id: "",
+    user_id: "",
+    user_name: "",
+    email: "",
+    phone: "",
+    department: "",
+    role: "",
+    create_date: "",
+    update_date: "",
+    image: "",
+    is_active: "",
+    is_delete: "",
+    delete_by: "",
     password: "",
   });
 
+  const { showLoading, hideLoading } = useLoadingStore();
+  const [forceRefectInfo, setForceRefectInfo] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<any>(null);
-
   const handleInputChange = (field: any, value: any) => {
     setFormInfo((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        showLoading("Đang tải dữ liệu...");
+        let parameter = {
+          data: {
+            is_delete: false,
+          },
+        };
+        const response: any = (
+          await userManagementApiRequest.sListUser(parameter)
+        ).payload;
+
+        let userInfo = (response.data as []).filter(
+          (item: any) => item.id === 25
+        );
+
+        setFormInfo({
+          ...(userInfo[0] as any),
+          image: ((userInfo[0] as any).image as string).replace(
+            "https://mlb.hsvina.com/api",
+            "http://10.101.1.135:8280"
+          ),
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        hideLoading();
+      }
+    };
+
+    fetchData();
+  }, [forceRefectInfo]);
 
   const openImageLibrary = () => {
     const options: any = {
@@ -55,11 +91,7 @@ const MyAccountStack = () => {
   };
 
   const onSaveAccount = async () => {
-    // console.log(">file", selectedImage);
-    // console.log(">formInfo", formInfo);
-
     const formData = new FormData();
-    8;
 
     // Thêm các trường thông thường
     formData.append("id", formInfo.id);
@@ -87,6 +119,7 @@ const MyAccountStack = () => {
 
       if (response.message === "SUCCESS") {
         Alert.alert("Thành công", "Cập nhật thông tin thành công!");
+        setForceRefectInfo(!forceRefectInfo);
       } else {
         Alert.alert("Lỗi", response.message || "Cập nhật thông tin thất bại.");
       }
@@ -186,7 +219,7 @@ const MyAccountStack = () => {
               <Image
                 className="rounded-full"
                 style={{ width: 100, height: 100 }}
-                source={{ uri: formInfo.image }}
+                source={{ uri: formInfo.image, cache: "reload" }}
               />
 
               <Button className="items-center" onPress={openImageLibrary}>

@@ -16,6 +16,7 @@ import { PortalHost } from "@rn-primitives/portal";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { useAuthStore } from "~/store/authStore";
+import LoadingOverlay from "~/components/(components)/loading-overlay";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -81,11 +82,14 @@ const Guard = () => {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(public)" />
-      <Stack.Screen name="(private)/(drawer)" />
-      {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
-    </Stack>
+    <>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(public)" />
+        <Stack.Screen name="(private)/(drawer)" />
+        {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
+      </Stack>
+      <LoadingOverlay />
+    </>
   );
 };
 

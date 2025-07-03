@@ -4,9 +4,11 @@ import { Alert, StyleSheet, Text, TextInput, View } from "react-native"; // Thê
 import { useAuthStore } from "../../store/authStore"; // <--- Thay đổi ở đây
 import authApiRequest from "~/apis/auth.api";
 import { Button } from "~/components/ui/button";
+import { useLoadingStore } from "~/store/loadingStore";
 
 export default function Login() {
   const router = useRouter();
+  const { showLoading, hideLoading } = useLoadingStore();
   const { signIn } = useAuthStore();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -17,8 +19,8 @@ export default function Login() {
       return;
     }
 
-    console.log("start");
     try {
+      showLoading("Đang đăng nhập...");
       const response = await authApiRequest.sLogin({ username, password });
       const result = response.payload;
       signIn({ name: result.user_name, email: result.email }); // Gọi hàm signIn từ store
@@ -26,6 +28,8 @@ export default function Login() {
     } catch (error) {
       console.error("error", error);
       Alert.alert("Lỗi", "Tên người dùng hoặc mật khẩu không đúng.");
+    } finally {
+      hideLoading();
     }
   };
 
