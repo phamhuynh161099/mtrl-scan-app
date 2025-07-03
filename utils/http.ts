@@ -62,6 +62,9 @@ export class EntityError extends HttpError {
     }
 }
 
+/**
+ ** Custom hàm gọi api cho fetch()
+ */
 const request = async <Response>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,
@@ -84,7 +87,7 @@ const request = async <Response>(
             }
 
     const accessToken = await AsyncStorage.getItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
-    const normalizedRequestUrl = normalizePath(url) // Renamed to avoid conflict
+    const normalizedRequestUrl = normalizePath(url)
     if (accessToken) {
         if (
             normalizedRequestUrl.startsWith('auth/getToken')
@@ -172,9 +175,6 @@ const request = async <Response>(
             // await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ACCESS_TOKEN);
             // await AsyncStorage.removeItem(LOCAL_STORAGE_KEYS.WF_ZUST_ACCOUNT);
 
-
-
-            // Throw HttpError; app handles navigation.
             throw new HttpError({
                 status: AUTHENTICATION_ERROR_STATUS,
                 payload: parsedPayload || { message: 'Authentication failed' },
@@ -185,6 +185,9 @@ const request = async <Response>(
         }
     }
 
+    /**
+     ** Nếu api là getToken xử lý thêm việc lưu token
+     */
     if (
         normalizedRequestUrl.startsWith('auth/getToken')
     ) {

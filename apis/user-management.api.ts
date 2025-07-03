@@ -1,7 +1,7 @@
 import { http } from "~/utils/http";
 
 const userManagementApiRequest = {
-    sUpdateUser: (body: any) => http.post<any>(`/user-management/update`, body),
+    sUpdateUser: (formData: FormData) => http.post<any>(`/user-management/update`, formData),
 
     // sLogout: () => http.get<any>('/auth/logOut')
 }
