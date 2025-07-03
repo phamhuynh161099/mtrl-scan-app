@@ -102,6 +102,17 @@ export default function DrawerLayout() {
           ),
         }}
       />
+
+      <Drawer.Screen
+        name="my-account"
+        options={{
+          drawerLabel: "My Account",
+          title: "",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
+          ),
+        }}
+      />
     </Drawer>
   );
 }

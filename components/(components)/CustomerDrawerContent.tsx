@@ -3,7 +3,7 @@ import {
   DrawerItem,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { Image, Linking, Text, View } from "react-native";
+import { Image, Linking, ScrollView, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
@@ -19,7 +19,7 @@ export default function CustomDrawerContent(props: any) {
 
   return (
     <>
-      <View className="flex-1">
+      <ScrollView className="flex-1">
         <View
           className="items-center p-2 bg-[#dde3fe]"
           style={{
@@ -75,7 +75,7 @@ export default function CustomDrawerContent(props: any) {
         >
           <Text>Footer</Text>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 }
