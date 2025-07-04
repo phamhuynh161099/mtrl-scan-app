@@ -88,6 +88,7 @@ const Guard = () => {
         <Stack.Screen name="(private)/(drawer)" />
         {/* <Stack.Screen name="modal" options={{ presentation: 'modal' }} /> */}
       </Stack>
+      <PortalHost />
       <LoadingOverlay />
     </>
   );

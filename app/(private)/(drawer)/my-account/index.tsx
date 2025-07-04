@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { launchImageLibrary } from "react-native-image-picker";
 import userManagementApiRequest from "~/apis/user-management.api";
 import { useLoadingStore } from "~/store/loadingStore";
+import { Input } from "~/components/ui/input";
 
 const MyAccountStack = () => {
   const [formInfo, setFormInfo] = useState({
@@ -132,7 +133,7 @@ const MyAccountStack = () => {
   return (
     <>
       <ScrollView className="flex-1 p-2">
-        <View className="flex-1 rounded-md shadow-md bg-white p-2 mb-10">
+        <View className="flex-1 rounded-md shadow-md bg-white p-4 mb-10">
           <View className="py-2 bg-white border-b border-gray-100/50">
             <Text className="font-bold text-xl">Information</Text>
           </View>
@@ -140,8 +141,8 @@ const MyAccountStack = () => {
           <View className="mt-2 gap-2">
             <View>
               <Text className="text-gray-500 font-semibold ">UserId.</Text>
-              <TextInput
-                className="mt-1 p-2 border border-gray-300 rounded-md text-lg"
+              <Input
+                className="mt-1 p-2 px-6 border border-gray-300 rounded-full text-lg focus:border-sky-400"
                 placeholder=""
                 value={formInfo.user_id}
                 onChangeText={(text) => handleInputChange("empNo", text)}
@@ -150,8 +151,8 @@ const MyAccountStack = () => {
 
             <View>
               <Text className="text-gray-500 font-semibold ">Name</Text>
-              <TextInput
-                className="mt-1 p-2 border border-gray-300 rounded-md text-lg"
+              <Input
+                className="mt-1 p-2 px-6 border border-gray-300 rounded-full text-lg focus:border-sky-400"
                 placeholder=""
                 value={formInfo.user_name}
                 onChangeText={(text) => handleInputChange("user_name", text)}
@@ -160,8 +161,8 @@ const MyAccountStack = () => {
 
             <View>
               <Text className="text-gray-500 font-semibold ">Password</Text>
-              <TextInput
-                className="mt-1 p-2 border border-gray-300 rounded-md text-lg"
+              <Input
+                className="mt-1 p-2 px-6 border border-gray-300 rounded-full text-lg focus:border-sky-400"
                 placeholder=""
                 value={formInfo.password}
                 onChangeText={(text) => handleInputChange("password", text)}
@@ -170,8 +171,8 @@ const MyAccountStack = () => {
 
             <View>
               <Text className="text-gray-500 font-semibold ">Department</Text>
-              <TextInput
-                className="mt-1 p-2 border border-gray-300 rounded-md text-lg"
+              <Input
+                className="mt-1 p-2 px-6 border border-gray-300 rounded-full text-lg focus:border-sky-400"
                 placeholder=""
                 value={formInfo.department}
                 onChangeText={(text) => handleInputChange("department", text)}
@@ -180,8 +181,8 @@ const MyAccountStack = () => {
 
             <View>
               <Text className="text-gray-500 font-semibold ">Email</Text>
-              <TextInput
-                className="mt-1 p-2 border border-gray-300 rounded-md text-lg"
+              <Input
+                className="mt-1 p-2 px-6 border border-gray-300 rounded-full text-lg focus:border-sky-400"
                 placeholder=""
                 value={formInfo.email}
                 onChangeText={(text) => handleInputChange("email", text)}
@@ -190,8 +191,8 @@ const MyAccountStack = () => {
 
             <View>
               <Text className="text-gray-500 font-semibold ">Phone</Text>
-              <TextInput
-                className="mt-1 p-2 border border-gray-300 rounded-md text-lg"
+              <Input
+                className="mt-1 p-2 px-6 border border-gray-300 rounded-full text-lg focus:border-sky-400"
                 placeholder=""
                 value={formInfo.phone}
                 onChangeText={(text) => handleInputChange("phone", text)}
@@ -202,11 +203,12 @@ const MyAccountStack = () => {
               <Text className="text-gray-500 font-semibold ">Role</Text>
               <View className="mt-1 border border-gray-300 rounded-md">
                 <Picker
+                className="mt-1 p-2 px-6 border border-gray-300 !rounded-full text-lg focus:border-sky-400"
                   selectedValue={formInfo.role}
                   onValueChange={(itemValue) =>
                     handleInputChange("role", itemValue)
                   }
-                  style={{ height: 50 }}
+                  style={{ borderRadius: 50 }}
                 >
                   <Picker.Item label="Admin" value="admin" />
                   <Picker.Item label="Manager" value="manager" />
